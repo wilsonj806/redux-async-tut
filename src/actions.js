@@ -1,5 +1,3 @@
-import fetch from 'cross-fetch';
-
 export const REQUEST_POSTS = 'REQUEST_POSTS'
 export const RECIEVE_POSTS = 'RECIEVE_POSTS'
 export const SELECT_SUBREDDIT = 'SELECT_SUBREDDIT'
