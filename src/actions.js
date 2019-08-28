@@ -41,11 +41,16 @@ function receivePosts(subreddit, json) {
 // ----- Asynchronous dispatch function to handle requesting and recieving posts
 export function fetchPosts(subreddit) {
   // below is currying
-  return (dispatch) => {
+  return async (dispatch) => {
     dispatch(requestPosts(subreddit))
-    return fetch(`https://www.reddit.com/r/${subreddit}.json`)
-    .then(response => response.json())
-    .then(json => dispatch(receivePosts(subreddit, json)))
+    try {
+      const res = await fetch(`https://www.reddit.com/r/${subreddit}.json`);
+      const data = await res.clone().json();
+      console.log('finishing up, dispatching retrieval action');
+      return dispatch(receivePosts(subreddit, data));
+    } catch (error) {
+      console.error(error)
+    }
   }
 }
 
@@ -68,12 +73,16 @@ export function fetchPostsIfNeeded(subreddit) {
 
   // This is useful for avoiding a network request if
   // a cached value is already available.
-  return (dispatch, getState) => {
-    if (shouldFetchPosts(getState(), subreddit)) {
-      // Dispatch a thunk from thunk! Very nice
-      // This lets us build more complex async actions
-      // while keeping the core simple/ relatively the same
-      return dispatch(fetchPosts(subreddit))
+  return async (dispatch, getState) => {
+    try {
+      if (shouldFetchPosts(getState(), subreddit)) {
+        // Dispatch a thunk from thunk! Very nice
+        // This lets us build more complex async actions
+        // while keeping the core simple/ relatively the same
+        return dispatch(await fetchPosts(subreddit))
+      }
+    } catch (error) {
+      console.error(error);
     }
   }
 }
