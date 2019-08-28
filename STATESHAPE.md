@@ -93,3 +93,5 @@ In the above, we sort our state by the following:
 `postsBySubreddit` just lists subreddits with an array of items that take in `entities["posts"][postID]` values.
 
 So in this way our state only really has one source of truth for subreddits, posts, and users. If you need to reference posts or users, then you just pass the relevant ID value along.
+
+But for the purposes of this learning project, the first one will be used.
