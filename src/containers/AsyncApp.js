@@ -12,13 +12,17 @@ import Posts from '../components/Posts'
 class AsyncApp extends Component {
   constructor(props) {
     super(props)
+    console.log('this is props\n', props);
     this.handleChange = this.handleChange.bind(this)
     this.handleRefreshClick = this.handleRefreshClick.bind(this)
   }
 
   componentDidMount() {
     const { dispatch, selectedSubreddit } = this.props
+    console.log('starting fetched post')
+    // await dispatch(fetchPostsIfNeeded(selectedSubreddit))
     dispatch(fetchPostsIfNeeded(selectedSubreddit))
+    console.log('finishing dispatch');
   }
 
   componentDidUpdate(prevProps) {
@@ -42,6 +46,7 @@ class AsyncApp extends Component {
   }
 
   render() {
+    console.log('rendering');
     const { selectedSubreddit, posts, isFetching, lastUpdated } = this.props
     return (
       <div>
@@ -96,5 +101,6 @@ function mapStateToProps(state) {
     lastUpdated
   }
 }
+
 
 export default connect(mapStateToProps)(AsyncApp)
