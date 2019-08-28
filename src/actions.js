@@ -1,5 +1,5 @@
 export const REQUEST_POSTS = 'REQUEST_POSTS'
-export const RECIEVE_POSTS = 'RECIEVE_POSTS'
+export const RECEIVE_POSTS = 'RECEIVE_POSTS'
 export const SELECT_SUBREDDIT = 'SELECT_SUBREDDIT'
 export const INVALIDATE_SUBREDDIT = 'INVALIDATE_SUBREDDIT'
 /* NOTE the below are all synchronous wrapper functions for dispatching an action */
@@ -21,17 +21,17 @@ export function invalidateSubreddit(subreddit) {
 
 
 // ----- Request subreddit posts
-function requestPosts(subreddit, json) {
+function requestPosts(subreddit) {
   return {
     type: REQUEST_POSTS,
-    subreddit,
+    subreddit
   }
 }
 
 // ---- Recieve subreddit posts
-function recievePosts(subreddit, json) {
+function receivePosts(subreddit, json) {
   return {
-    type: RECIEVE_POSTS,
+    type: RECEIVE_POSTS,
     subreddit,
     posts: json.data.children.map(child => child.data),
     recievedAt: Date.now()
@@ -41,15 +41,11 @@ function recievePosts(subreddit, json) {
 // ----- Asynchronous dispatch function to handle requesting and recieving posts
 export function fetchPosts(subreddit) {
   // below is currying
-  return async (dispatch) => {
+  return (dispatch) => {
     dispatch(requestPosts(subreddit))
-    try {
-      const res = await fetch(`https://www.reddit.com/r/${subreddit}.json`);
-      const data = res.clone().json();
-      dispatch(dispatch(recievePosts(subreddit, data)));
-    } catch (error) {
-      console.error(error)
-    }
+    return fetch(`https://www.reddit.com/r/${subreddit}.json`)
+    .then(response => response.json())
+    .then(json => dispatch(receivePosts(subreddit, json)))
   }
 }
 
@@ -78,9 +74,6 @@ export function fetchPostsIfNeeded(subreddit) {
       // This lets us build more complex async actions
       // while keeping the core simple/ relatively the same
       return dispatch(fetchPosts(subreddit))
-    } else {
-      // Let the calling code know there's nothing to wait for.
-      return Promise.resolve()
     }
   }
 }
