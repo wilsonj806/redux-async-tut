@@ -1,23 +1,20 @@
-import React, { Component } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 
-export default class Picker extends Component {
-  render() {
-    const { value, onChange, options } = this.props
-
-    return (
-      <span>
-        <h1>{value}</h1>
-        <select onChange={e => onChange(e.target.value)} value={value}>
-          {options.map(option => (
-            <option value={option} key={option}>
-              {option}
-            </option>
-          ))}
-        </select>
-      </span>
-    )
-  }
+const Picker = (props) => {
+  const { value, onChange, options } = props
+  return (
+    <span>
+      <h1>{value}</h1>
+      <select onChange={e => onChange(e.target.value)} value={value}>
+        {options.map(option => (
+          <option value={option} key={option}>
+            {option}
+          </option>
+        ))}
+      </select>
+    </span>
+  )
 }
 
 Picker.propTypes = {
@@ -25,3 +22,5 @@ Picker.propTypes = {
   value: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired
 }
+
+export default Picker
